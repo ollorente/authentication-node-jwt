@@ -55,20 +55,22 @@ app.login = async (req, res, next) => {
     const {
         error
     } = loginValidation(req.body)
-    if (error) return res.status(400).json(error.details[0].message)
+    if (error) return res.status(400).json({
+        error: error.details[0].message
+    })
 
     /* Checking if the user is already in the database */
     const user = await User.findOne({
         email: req.body.email
     })
     if (!user) return res.status(400).json({
-        error: `Email or password in wrong!e`
+        error: `Email or password in wrong!`
     })
 
     /* Password in correct */
     const validPass = await bcrypt.compare(req.body.password, user.password)
     if (!validPass) res.status(400).json({
-        error: `Email or password in wrong!p`
+        error: `Email or password in wrong!`
     })
 
     const token = JWT.sign({
@@ -77,7 +79,7 @@ app.login = async (req, res, next) => {
         expiresIn: '1h'
     })
 
-    res.status(200).header('auth-token', token).json({
+    res.status(200).header('Authorization', token).json({
         jwt: token
     })
 }
