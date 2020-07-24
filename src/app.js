@@ -1,9 +1,14 @@
 require('dotenv').config()
 const express = require('express')
 const path = require('path')
+const morgan = require('morgan')
+const cors = require('cors')
 
 const app = express()
 
+/*  Middlewares*/
+app.use(cors())
+app.use(morgan('tiny'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 

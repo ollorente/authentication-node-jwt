@@ -7,7 +7,6 @@ const {
 
 api.route('/')
     .get(verify, (req, res) => {
-        console.log(req.user)
         res.status(200).json({ message: `Welcome to API!` })
     })
 

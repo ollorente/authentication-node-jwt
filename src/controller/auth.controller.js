@@ -48,7 +48,7 @@ app.login = async (req, res, next) => {
     const user = await User.findOne({ email: req.body.email })
     if (!user) return res.status(400).json({ error: `Email or password in wrong!e`})
 
-    /* Passord in correct */
+    /* Password in correct */
     const validPass = await bcrypt.compare(req.body.password, user.password)
     if (!validPass) res.status(400).json({ error: `Email or password in wrong!p`})
 
