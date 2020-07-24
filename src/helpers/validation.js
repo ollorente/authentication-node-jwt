@@ -3,12 +3,17 @@ const Joi = require('@hapi/joi')
 
 /* Register Validation */
 const registerValidation = data => {
-    const schema =  Joi.object({
+    const schema = Joi.object({
         displayName: Joi.string()
             .max(256)
             .min(3),
         email: Joi.string()
-            .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
+            .email({
+                minDomainSegments: 2,
+                tlds: {
+                    allow: ['com', 'net']
+                }
+            }),
         password: Joi.string()
             .max(30)
             .min(3)
@@ -23,9 +28,14 @@ const registerValidation = data => {
 
 /* Login Validation */
 const loginValidation = data => {
-    const schema =  Joi.object({
+    const schema = Joi.object({
         email: Joi.string()
-            .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
+            .email({
+                minDomainSegments: 2,
+                tlds: {
+                    allow: ['com', 'net']
+                }
+            }),
         password: Joi.string()
             .max(30)
             .min(3)

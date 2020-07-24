@@ -7,7 +7,9 @@ const {
 
 api.route('/')
     .get(verify, (req, res) => {
-        res.status(200).json({ message: `Welcome to API!` })
+        res.status(200).json({
+            message: `Welcome to API!`
+        })
     })
 
 api.route('/register')

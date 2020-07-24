@@ -2,7 +2,10 @@ const JWT = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const app = {}
 
-const { loginValidation, registerValidation } = require('../helpers/validation')
+const {
+    loginValidation,
+    registerValidation
+} = require('../helpers/validation')
 
 const {
     User
@@ -10,12 +13,18 @@ const {
 
 app.register = async (req, res, next) => {
     /* Validate data */
-    const { error } = registerValidation(req.body)
+    const {
+        error
+    } = registerValidation(req.body)
     if (error) return res.status(400).json(error.details[0].message)
 
     /* Checking if the user is already in the database */
-    const emailExist = await User.findOne({ email: req.body.email })
-    if (emailExist) return res.status(400).json({ error: `Email already exist!`})
+    const emailExist = await User.findOne({
+        email: req.body.email
+    })
+    if (emailExist) return res.status(400).json({
+        error: `Email already exist!`
+    })
 
     /* Hash password */
     const salt = await bcrypt.genSalt(10)
@@ -36,25 +45,41 @@ app.register = async (req, res, next) => {
         return next(error)
     }
 
-    res.status(201).json({ user: result._id })
+    res.status(201).json({
+        user: result._id
+    })
 }
 
 app.login = async (req, res, next) => {
     /* Validate data */
-    const { error } = loginValidation(req.body)
+    const {
+        error
+    } = loginValidation(req.body)
     if (error) return res.status(400).json(error.details[0].message)
 
     /* Checking if the user is already in the database */
-    const user = await User.findOne({ email: req.body.email })
-    if (!user) return res.status(400).json({ error: `Email or password in wrong!e`})
+    const user = await User.findOne({
+        email: req.body.email
+    })
+    if (!user) return res.status(400).json({
+        error: `Email or password in wrong!e`
+    })
 
     /* Password in correct */
     const validPass = await bcrypt.compare(req.body.password, user.password)
-    if (!validPass) res.status(400).json({ error: `Email or password in wrong!p`})
+    if (!validPass) res.status(400).json({
+        error: `Email or password in wrong!p`
+    })
 
-    const token = JWT.sign({ _id: user._id }, process.env.SECRET_KEY, { expiresIn: Math.floor(Date.now() / 1000) + (60 * 60) })
+    const token = JWT.sign({
+        _id: user._id
+    }, process.env.SECRET_KEY, {
+        expiresIn: '1h'
+    })
 
-    res.status(200).header('auth-token', token).json(token)
+    res.status(200).header('auth-token', token).json({
+        jwt: token
+    })
 }
 
 module.exports = app
