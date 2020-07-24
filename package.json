@@ -1,0 +1,39 @@
+{
+  "name": "authentication-node-jwt",
+  "version": "1.0.0",
+  "description": "Boilerplate of authentication with NodeJS and JWT",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "start": "nodem src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ollorente/authentication-node-jwt.git"
+  },
+  "keywords": [
+    "auth",
+    "authentication",
+    "boilerplate",
+    "jwt",
+    "node",
+    "nodejs"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ollorente/authentication-node-jwt/issues"
+  },
+  "homepage": "https://github.com/ollorente/authentication-node-jwt#readme",
+  "dependencies": {
+    "@hapi/joi": "^17.1.1",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.25"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
