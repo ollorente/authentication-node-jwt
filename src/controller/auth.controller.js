@@ -52,7 +52,7 @@ app.login = async (req, res, next) => {
     const validPass = await bcrypt.compare(req.body.password, user.password)
     if (!validPass) res.status(400).json({ error: `Email or password in wrong!p`})
 
-    const token = JWT.sign({ _id: user._id }, process.env.SECRET_KEY)
+    const token = JWT.sign({ _id: user._id }, process.env.SECRET_KEY, { expiresIn: Math.floor(Date.now() / 1000) + (60 * 60) })
 
     res.status(200).header('auth-token', token).json(token)
 }
