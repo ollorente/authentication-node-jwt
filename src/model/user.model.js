@@ -19,7 +19,7 @@ const dbSchema = new Schema({
     password: {
         type: String,
         required: true,
-        max: 30,
+        max: 255,
         min: 3
     },
     phoneNumber: {
@@ -27,7 +27,12 @@ const dbSchema = new Schema({
         max: 20,
         min: 6
     },
-    photoURL: String
+    photoURL: String,
+    uid: {
+        type: String,
+        unique: true,
+        required: true
+    }
 }, {
     timestamps: true
 })

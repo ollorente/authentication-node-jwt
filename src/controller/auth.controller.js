@@ -6,8 +6,10 @@ const {
     loginValidation,
     registerValidation
 } = require('../helpers/validation')
+const random = require('../helpers/randomNumber')
 
 const {
+    Token,
     User
 } = require('../model')
 
@@ -26,28 +28,45 @@ app.register = async (req, res, next) => {
         error: `Email already exist!`
     })
 
-    /* Hash password */
-    const salt = await bcrypt.genSalt(10)
-    const hashedPassword = await bcrypt.hash(req.body.password, salt)
+    async function createUID() {
+        const uidRandom = await random()
+        const userInfo = await User.findOne({
+            uid: uidRandom
+        })
+        if (userInfo) {
+            createUID()
+        } else {
+            /* Hash password */
+            const salt = await bcrypt.genSalt(10)
+            const hashedPassword = await bcrypt.hash(req.body.password, salt)
 
-    const newData = new User({
-        displayName: req.body.displayName,
-        email: req.body.email,
-        password: hashedPassword,
-        phoneNumber: req.body.phoneNumber,
-        photoURL: req.body.photoURL
-    })
+            const newData = new User({
+                displayName: req.body.displayName || '',
+                email: req.body.email,
+                password: hashedPassword,
+                phoneNumber: req.body.phoneNumber || '',
+                photoURL: req.body.photoURL || '',
+                uid: uidRandom
+            })
 
-    let result
-    try {
-        result = await newData.save()
-    } catch (error) {
-        return next(error)
+            let result
+            try {
+                result = await newData.save()
+            } catch (error) {
+                return next(error)
+            }
+
+            res.status(201).json({
+                displayName: result.displayName,
+                email: result.email,
+                phoneNumber: result.phoneNumber,
+                photoURL: result.photoURL,
+                providerId: 'MyAuth',
+                uid: result.uid
+            })
+        }
     }
-
-    res.status(201).json({
-        user: result._id
-    })
+    createUID()
 }
 
 app.login = async (req, res, next) => {
@@ -73,15 +92,41 @@ app.login = async (req, res, next) => {
         error: `Email or password in wrong!`
     })
 
-    const token = JWT.sign({
-        _id: user._id
-    }, process.env.SECRET_KEY, {
-        expiresIn: '1h'
-    })
+    async function createUID() {
+        const uidRandom = await random()
+        const tokenInfo = await Token.findOne({
+            jwtid: uidRandom
+        })
+        if (tokenInfo) {
+            createUID()
+        } else {
+            const newData = new Token({
+                jwtid: uidRandom
+            })
 
-    res.status(200).header('Authorization', token).json({
-        jwt: token
-    })
+            let token
+            try {
+                await newData.save()
+
+                token = JWT.sign({
+                    _id: user._id
+                }, process.env.SECRET_KEY, {
+                    expiresIn: '1h',
+                    jwtid: uidRandom
+                })
+            } catch (error) {
+                return next({
+                    error: error.details[0].message
+                })
+            }
+
+            res.status(200).header('Authorization', token).json({
+                jwt: token
+            })
+
+        }
+    }
+    createUID()
 }
 
 module.exports = app
